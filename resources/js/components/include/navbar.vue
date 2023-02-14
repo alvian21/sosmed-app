@@ -5,7 +5,7 @@
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">{{ user.name }}</a>
+                    <a class="nav-link" href="#">{{ user? user.name : '' }}</a>
                 </li>
                 <li class="nav-item active">
                     <router-link class="nav-link" :to="{ name: 'home' }">
@@ -37,15 +37,24 @@ export default {
     data() {
         return {
             user: {
-                name: null
+                name: ""
             }
         }
     },
     mounted() {
-        this.$store.commit("setErrors", {});
-        this.getUserData();
-        this.user = this.$store.getters['auth/user']
 
+        if (!this.$store.getters['auth/user']) {
+            this.getUserData().then(() => {
+                this.user = this.$store.getters['auth/user']
+            })
+        }else{
+            this.user = this.$store.getters['auth/user']
+        }
+
+
+    },
+    created() {
+        this.getUserData();
     },
     computed: {
         ...mapGetters(["errors"])

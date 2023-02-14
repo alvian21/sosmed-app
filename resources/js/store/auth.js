@@ -1,5 +1,6 @@
 import axios from "axios";
 import router from '../router';
+import createPersistedState from "vuex-persistedstate";
 
 export default {
     namespaced: true,
@@ -20,11 +21,14 @@ export default {
 
     actions: {
         getUserData({ commit }) {
-           axios
+          return axios
                 .post("/api/user")
                 .then(response => {
-                    console.log(response);
+
+                    localStorage.setItem("user",response.data.data.user)
                     commit("setUserData", response.data.data.user);
+
+                    return response;
                 })
                 .catch(() => {
                     // localStorage.removeItem("authToken");
@@ -61,5 +65,7 @@ export default {
                 });
             });
         },
-    }
+    },
+
+    plugins: [createPersistedState()]
 };

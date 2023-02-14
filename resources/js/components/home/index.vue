@@ -23,7 +23,7 @@
                     <img class="rounded-circle"
                         src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="
                         alt="Generic placeholder image" width="140" height="140">
-                    <h2>{{ user.name }}</h2>
+                    <h2>{{ userData ? userData.name :'' }}</h2>
                     <div class="row">
                         <div class="col-md-4">
                             5 Post
@@ -121,8 +121,8 @@ import alert from '../include/alert.vue'
 export default {
     data() {
         return {
-            user: {
-                name: null
+            userData: {
+                name: ""
             }
         }
     },
@@ -130,11 +130,18 @@ export default {
         BaseTemplate
     },
     mounted() {
-        this.user = this.$store.getters['auth/user']
+        if (!this.$store.getters['auth/user']) {
+            this.getUserData().then(() => {
+                this.userData = this.$store.getters['auth/user']
+            })
+        }else{
+            this.userData = this.$store.getters['auth/user']
+        }
 
     },
     computed: {
         ...mapGetters("auth", ["user"])
+
     },
     methods: {
         ...mapActions("auth", ["getUserData"]),
