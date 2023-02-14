@@ -9,19 +9,21 @@
                     <img class="rounded-circle"
                         src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="
                         alt="Generic placeholder image" width="140" height="140">
-                    <h2>Alvian</h2>
+                    <h2>{{ userData.name }}</h2>
                     <div class="row">
                         <div class="col-md-4">
                             5 Post
                         </div>
                         <div class="col-md-4">
-                            10 Follower
+                            {{ userData.follower }} Follower
                         </div>
                         <div class="col-md-4">
-                            12 Following
+                            {{ userData.following }} Following
                         </div>
                     </div>
-                    <button type="button" class="btn btn-primary w-100">Follow</button>
+                    <button type="button" v-on:click="onFollow()" :class="class_follow">
+                        {{ status_follow? 'Followed': 'Follow' }}
+                    </button>
 
 
                 </div>
@@ -107,8 +109,59 @@
 import BaseTemplate from '../base.vue'
 
 export default {
+    data() {
+        return {
+            userData: {
+                id: null,
+                name: '',
+                post: 0,
+                follower: 0,
+                following: 0,
+
+            },
+            status_follow: false,
+            class_follow: 'btn btn-primary w-100'
+        }
+    },
     components: {
         BaseTemplate
+    },
+    mounted() {
+        this.getProfile()
+
+
+    },
+    methods: {
+        getProfile() {
+            this.axios.get('/api/profile/' + this.$route.params.username)
+                .then(response => {
+                    console.log(response);
+                    this.userData.id = response.data.data.id;
+                    this.userData.name = response.data.data.name;
+                    this.userData.follower = response.data.data.follower_count;
+                    this.userData.following = response.data.data.following_count;
+                    this.status_follow = response.data.data.status_follow;
+
+                    if (this.status_follow) {
+                        this.class_follow = 'btn btn-success w-100'
+                    }
+                }, (this))
+        },
+        onFollow() {
+            this.axios.post('/api/follow', {
+                follow_user_id: this.userData.id
+            }).then(response => {
+                if(response.data.data.status_follow){
+                    this.class_follow = 'btn btn-success w-100'
+                }else{
+                    this.class_follow = 'btn btn-primary w-100'
+                }
+
+                this.status_follow = response.data.data.status_follow
+
+                this.getProfile()
+            },(this))
+        }
     }
 }
 </script>

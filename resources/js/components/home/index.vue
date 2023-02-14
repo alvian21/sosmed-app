@@ -35,10 +35,10 @@
                             {{ post_count }} Post
                         </div>
                         <div class="col-md-4">
-                            10 Follower
+                            {{ follower }} Follower
                         </div>
                         <div class="col-md-4">
-                            12 Following
+                            {{ following }} Following
                         </div>
                     </div>
 
@@ -94,6 +94,8 @@ export default {
                 image: null
             },
             post_count: 0,
+            follower:0,
+            following:0,
             formError: '',
             formSuccess: ''
         }
@@ -106,11 +108,15 @@ export default {
         if (!this.$store.getters['auth/user']) {
             this.getUserData().then(() => {
                 this.userData = this.$store.getters['auth/user']
+                this.follower = this.userData.follower_count;
+                this.following = this.userData.following_count;
             }, (this))
 
 
         } else {
             this.userData = this.$store.getters['auth/user']
+            this.follower = this.userData.follower_count;
+                this.following = this.userData.following_count;
         }
 
 
@@ -162,7 +168,9 @@ export default {
         },
         getPost() {
             this.post = []
-            this.axios.get("/api/post").then(response => {
+            this.axios.get("/api/post",{params:{
+                status:true
+            }}).then(response => {
                 if (response.data.success) {
 
                     for (let index = 0; index < response.data.data.length; index++) {

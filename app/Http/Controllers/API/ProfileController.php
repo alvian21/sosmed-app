@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use App\Models\Post;
+use App\Http\Controllers\BaseController;
+use App\Models\Follow;
+use App\Models\User;
 
-class ProfileController extends Controller
+class ProfileController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -46,7 +51,13 @@ class ProfileController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = User::where('id', '!=', auth()->user()->id)->where('username', $id)->withCount(['following', 'follower'])->firstOrFail();
+
+        $cek = Follow::where('user_id', auth()->user()->id)->where('follow_user_id', $user->id)->first();
+
+        $user->status_follow = ($cek) ? true : false;
+
+        return $this->sendResponse($user, 'User retrieved');
     }
 
     /**

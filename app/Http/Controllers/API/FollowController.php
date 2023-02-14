@@ -7,27 +7,19 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\Models\Post;
 use App\Http\Controllers\BaseController;
+use App\Models\Follow;
+use App\Models\User;
 
-class PostController extends BaseController
+class FollowController extends BaseController
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $status = $request->get('status');
-
-        if($status){
-            $post = Post::where('user_id', auth()->user()->id)->get();
-        }else{
-            $post = Post::where('user_id', $request->get('user_id'))->get();
-        }
-
-
-
-        return $this->sendResponse($post, 'Post retrieved');
+        //
     }
 
     /**
@@ -48,9 +40,10 @@ class PostController extends BaseController
      */
     public function store(Request $request)
     {
+
+
         $validator = Validator::make($request->all(), [
-            'description' => 'required',
-            'image' => 'required|mimes:png,jpg|image|max:1024',
+            'follow_user_id' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -66,21 +59,26 @@ class PostController extends BaseController
         DB::beginTransaction();
 
         try {
+            $follow_user_id = $request->get('follow_user_id');
 
-            $post = new Post();
-            $post->description = $request->get('description');
-            $post->user_id = auth()->user()->id;
-            if ($request->hasFile('image')) {
-                $file = $request->file('image');
-                $filename = rand(10000,99999).time() . '-' . $file->getClientOriginalName();
-                $file->storeAs('public', $filename);
-                $post->image = $filename;
+            $cek = Follow::where('user_id', auth()->user()->id)->where('follow_user_id', $follow_user_id)->first();
+
+            if ($cek) {
+                $status_follow = false;
+                Follow::where('user_id', auth()->user()->id)->where('follow_user_id', $follow_user_id)->delete();
+            } else {
+                $follow = new Follow();
+                $follow->user_id = auth()->user()->id;
+                $follow->follow_user_id = $follow_user_id;
+                $follow->save();
+                $status_follow = true;
             }
-            $post->save();
+
+            $data['status_follow'] = $status_follow;
 
             DB::commit();
 
-            return $this->sendResponse($post, 'Post created');
+            return $this->sendResponse($data, 'Success follow');
         } catch (\Exception $e) {
 
             DB::rollBack();
@@ -131,12 +129,6 @@ class PostController extends BaseController
      */
     public function destroy($id)
     {
-        $post = Post::where('user_id', auth()->user()->id)->where('id', $id)->first();
-
-        unlink(storage_path('app/public/' . $post->image));
-
-        Post::where('user_id', auth()->user()->id)->where('id', $id)->delete();
-
-        return $this->sendResponse([], 'Post deleted');
+        //
     }
 }

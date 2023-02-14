@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\SearchController;
+use App\Http\Controllers\API\ProfileController;
+use App\Http\Controllers\API\FollowController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,4 +32,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('post', PostController::class);
 
     Route::resource('search', SearchController::class);
+
+    Route::resource('profile', ProfileController::class);
+
+    Route::resource('follow', FollowController::class);
 });

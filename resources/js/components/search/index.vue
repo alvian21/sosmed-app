@@ -14,7 +14,7 @@
 
             <div class="row mt-2" v-for="(user, index) in userList" :key="index">
                 <div class="col-md-12">
-                    <router-link :to="{name:'search'}">
+                    <router-link :to="{name:'profile', params:{username:user.username}}">
                         <div class="card-body" style="border: 1px solid burlywood; border-radius: 10px;">
                             <div class="row justify-content-center">
                                 <div style="display: inline-flex;">
