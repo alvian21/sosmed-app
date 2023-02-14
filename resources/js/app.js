@@ -27,14 +27,12 @@ const app = createApp(AppWrapper)
 axios.interceptors.response.use(
     response => response,
     error => {
-        setTimeout(() => {
-            if (error.response.status === 422) {
-                store.commit("setErrors", error.response.data.errors);
-            } else {
-                store.commit("setErrors", error.response.data.data ? error.response.data.data : error);
-                return Promise.reject(error);
-            }
-        }, 1000);
+        if (error.response.status === 422) {
+            store.commit("setErrors", error.response.data.errors);
+        } else {
+            store.commit("setErrors", error.response.data.data ? error.response.data.data : error);
+            return Promise.reject(error);
+        }
     }
 );
 

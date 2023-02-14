@@ -16,6 +16,7 @@ class AuthController extends BaseController
     public function user()
     {
         $user = Auth::user();
+        $user = User::where('id',$user->id)->with('post')->first();
         $success['user'] =  $user;
 
         return $this->sendResponse($success, 'Data user retrived');

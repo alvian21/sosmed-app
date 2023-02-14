@@ -31,8 +31,8 @@ export default {
                     return response;
                 })
                 .catch(() => {
-                    // localStorage.removeItem("authToken");
-                    // window.location.reload();
+                    localStorage.removeItem("authToken");
+                    window.location.reload();
                 });
         },
         sendLoginRequest({ commit }, data) {
