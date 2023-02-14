@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\PostController;
+use App\Http\Controllers\API\SearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,4 +28,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('user', [AuthController::class, 'user'])->name('user');
 
     Route::resource('post', PostController::class);
+
+    Route::resource('search', SearchController::class);
 });
