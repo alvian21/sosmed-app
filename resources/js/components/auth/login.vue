@@ -3,20 +3,23 @@
         <div class="container">
             <div class="phone-app-demo"></div>
             <div class="form-data">
-                <form action="">
+                <alert :error="formError" />
+                <form @submit.prevent="login">
                     <div class="logo">
                         <img src="/assets/images/logo.png" alt="" srcset="">
                     </div>
-                    <input type="text" name="username" id="username" placeholder="Email">
+                    <input type="text" name="username" required v-model="form.username" id="username"
+                        placeholder="Email">
 
-                    <input type="password" name="password" id="password" placeholder="Password">
-                    <button class="form-btn btn btn-primary" type="button"> Log in</button>
+                    <input type="password" required name="password" v-model="form.password" id="password"
+                        placeholder="Password">
 
+                    <button class="form-btn btn btn-primary" type="submit"> Log in</button>
 
                 </form>
                 <div class="sign-up">
                     Don't have an account?
-                    <router-link  :to="{ name: 'register' }">
+                    <router-link :to="{ name: 'register' }">
                         Sign up
                     </router-link>
 
@@ -69,12 +72,56 @@
                 </div>
             </div>
         </footer>
-
-
     </div>
 </template>
 
 <style lang="scss" scoped>
-
 @import '../../../css/style.scss';
 </style>
+
+<script>
+import { mapGetters, mapActions } from "vuex";
+
+import alert from '../include/alert.vue'
+
+
+export default {
+
+    components: {
+        'alert': alert
+    },
+    data() {
+        return {
+            form: {
+                username: '',
+                password: ''
+            },
+            formError: ''
+        }
+    },
+    mounted() {
+        this.$store.commit("setErrors", {});
+
+    },
+    computed: {
+        ...mapGetters(["errors"])
+    },
+    methods: {
+        ...mapActions("auth", ["sendLoginRequest"]),
+
+        login: function () {
+
+            this.sendLoginRequest(this.form)
+                .then(() => {
+                    this.$router.push({ name: "home" });
+                })
+                .catch(() => {
+                    this.formError = "wrong username or password"
+                });
+        },
+
+
+    }
+}
+
+</script>

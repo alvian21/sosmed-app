@@ -23,7 +23,7 @@
                     <img class="rounded-circle"
                         src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="
                         alt="Generic placeholder image" width="140" height="140">
-                    <h2>Alvian</h2>
+                    <h2>{{ user.name }}</h2>
                     <div class="row">
                         <div class="col-md-4">
                             5 Post
@@ -113,9 +113,31 @@
 <script>
 import BaseTemplate from '../base.vue'
 
+import { mapGetters, mapActions } from "vuex";
+
+import alert from '../include/alert.vue'
+
+
 export default {
+    data() {
+        return {
+            user: {
+                name: null
+            }
+        }
+    },
     components: {
         BaseTemplate
+    },
+    mounted() {
+        this.user = this.$store.getters['auth/user']
+
+    },
+    computed: {
+        ...mapGetters("auth", ["user"])
+    },
+    methods: {
+        ...mapActions("auth", ["getUserData"]),
     }
 }
 </script>

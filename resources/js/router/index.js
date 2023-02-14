@@ -28,19 +28,28 @@ const routes = [
     {
         path: '/',
         name: "home",
-        component: homePage
+        component: homePage,
+        meta:{
+            requireAuth:true
+        }
     },
 
     {
         path: '/search',
         name: "search",
-        component: searchPage
+        component: searchPage,
+        meta:{
+            requireAuth:true
+        }
     },
 
     {
         path: '/profile/:username',
         name: "profile",
-        component: profilePage
+        component: profilePage,
+        meta:{
+            requireAuth:true
+        }
     },
 
     // not found
@@ -54,5 +63,18 @@ const router = createRouter({
     history: createWebHistory(),
     routes
 })
+
+
+router.beforeEach((to, from, next) => {
+    if (to.name !== "login" && !localStorage.getItem("authToken") && to.name !== "register") {
+        next({ name: "login" });
+    } else if (to.name === "login" && localStorage.getItem("authToken")) {
+        next({ name: "home" });
+    } else {
+        next();
+    }
+
+});
+
 
 export default router;
