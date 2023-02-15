@@ -8,7 +8,7 @@
                 <div class="col-md-4">
                     <img class="rounded-circle" src="/user.png" alt="Generic placeholder image" width="140"
                         height="140">
-                    <h2>{{ userData.name }}</h2>
+                    <h2>{{ userData.name }} ({{ userData.username }})</h2>
                     <div class="row">
                         <div class="col-md-4">
                             {{ userData.post_count }} Post
@@ -49,7 +49,7 @@
                                     <div class="form-group">
                                         <label>Commment</label>
                                         <textarea v-model="comment" class="form-control comment" name="comment"
-                                            id="comment" rows="3"></textarea>
+                                            id="comment-{{ dataPost.id }}" rows="3"></textarea>
                                     </div>
                                     <button type="submit" class="btn btn-primary mt-2">Submit</button>
                                 </form>
@@ -82,6 +82,7 @@ export default {
                 follower: 0,
                 following: 0,
                 post_count: 0,
+                username:''
 
             },
             status_follow: false,
@@ -105,6 +106,7 @@ export default {
                     console.log(response);
                     this.userData.id = response.data.data.id;
                     this.userData.name = response.data.data.name;
+                    this.userData.username = response.data.data.username;
                     this.userData.follower = response.data.data.follower_count;
                     this.userData.following = response.data.data.following_count;
                     this.status_follow = response.data.data.status_follow;
