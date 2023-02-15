@@ -34,10 +34,10 @@
                             {{ post_count }} Post
                         </div>
                         <div class="col-md-4">
-                            {{ follower }} Follower
+                            {{ follower_count }} Follower
                         </div>
                         <div class="col-md-4">
-                            {{ following }} Following
+                            {{ following_count }} Following
                         </div>
                     </div>
 
@@ -101,21 +101,18 @@ import alert from '../include/alert.vue'
 export default {
     data() {
         return {
-            userData: {
-                name: "",
-                username: ""
-            },
+            userData: null,
             post: [],
             addPostData: {
                 description: null,
                 image: null
             },
             post_count: 0,
-            follower: 0,
-            following: 0,
+            follower_count: 0,
+            following_count: 0,
             formError: '',
             formSuccess: '',
-            comment:''
+            comment: ''
         }
     },
     components: {
@@ -123,21 +120,11 @@ export default {
         alert
     },
     mounted() {
-        if (!this.$store.getters['auth/user']) {
-            this.getUserData().then(() => {
-                this.userData = this.$store.getters['auth/user']
-                this.follower = this.userData.follower_count;
-                this.following = this.userData.following_count;
-            }, (this))
-
-
-        } else {
+        this.getUserData().then(() => {
             this.userData = this.$store.getters['auth/user']
-            this.follower = this.userData.follower_count;
-            this.following = this.userData.following_count;
-        }
-
-
+            this.follower_count = this.userData.follower_count;
+            this.following_count = this.userData.following_count;
+        }, (this))
         this.getPost()
     },
     computed: {

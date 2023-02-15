@@ -138,7 +138,7 @@ export default {
                     user_id: this.userData.id
                 }
             }).then(response => {
-                console.log(response);
+
                 if (response.data.success) {
 
                     for (let index = 0; index < response.data.data.length; index++) {
