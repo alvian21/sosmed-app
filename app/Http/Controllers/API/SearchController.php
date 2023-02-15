@@ -22,9 +22,7 @@ class SearchController extends BaseController
 
         $user = User::query();
 
-        $user->where('id','!=',auth()->user()->id);
-
-        $user->when($search, function($q) use ($search){
+        $user->where('id','!=',auth()->user()->id)->where(function($q) use ($search){
             return $q->where('name','like','%'.$search.'%')
                 ->orWhere('username','like','%'.$search.'%');
         });
