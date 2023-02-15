@@ -7,6 +7,8 @@ use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\SearchController;
 use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\FollowController;
+use App\Http\Controllers\API\CommentController;
+use App\Http\Controllers\API\LikeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +32,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('user', [AuthController::class, 'user'])->name('user');
 
     Route::resource('post', PostController::class);
+
+    Route::resource('comment', CommentController::class);
+
+    Route::resource('like', LikeController::class);
 
     Route::resource('search', SearchController::class);
 

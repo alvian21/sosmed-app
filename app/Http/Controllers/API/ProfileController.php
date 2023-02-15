@@ -51,7 +51,7 @@ class ProfileController extends BaseController
      */
     public function show($id)
     {
-        $user = User::where('id', '!=', auth()->user()->id)->where('username', $id)->withCount(['following', 'follower'])->firstOrFail();
+        $user = User::where('id', '!=', auth()->user()->id)->where('username', $id)->withCount(['following', 'follower', 'post'])->firstOrFail();
 
         $cek = Follow::where('user_id', auth()->user()->id)->where('follow_user_id', $user->id)->first();
 

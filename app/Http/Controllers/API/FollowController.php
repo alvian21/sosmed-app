@@ -40,8 +40,6 @@ class FollowController extends BaseController
      */
     public function store(Request $request)
     {
-
-
         $validator = Validator::make($request->all(), [
             'follow_user_id' => 'required',
         ]);

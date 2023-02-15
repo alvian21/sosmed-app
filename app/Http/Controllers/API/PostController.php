@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\Models\Post;
 use App\Http\Controllers\BaseController;
+use App\Models\PostLike;
 
 class PostController extends BaseController
 {
@@ -19,12 +20,20 @@ class PostController extends BaseController
     {
         $status = $request->get('status');
 
-        if($status){
-            $post = Post::where('user_id', auth()->user()->id)->get();
-        }else{
-            $post = Post::where('user_id', $request->get('user_id'))->get();
+        if ($status) {
+            $post = Post::where('user_id', auth()->user()->id)->withCount('postLike')->with('postComment.user')->get();
+        } else {
+            $post = Post::where('user_id', $request->get('user_id'))->withCount('postLike')->with('postComment.user')->get();
         }
 
+        $post = tap($post)->transform(function ($data) {
+
+            $liked = PostLike::where('user_id', auth()->user()->id)->where('post_id',$data->id)->count();
+
+            $data->liked = ($liked > 0) ? true : false;
+
+            return $data;
+        });
 
 
         return $this->sendResponse($post, 'Post retrieved');
@@ -72,7 +81,7 @@ class PostController extends BaseController
             $post->user_id = auth()->user()->id;
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
-                $filename = rand(10000,99999).time() . '-' . $file->getClientOriginalName();
+                $filename = rand(10000, 99999) . time() . '-' . $file->getClientOriginalName();
                 $file->storeAs('public', $filename);
                 $post->image = $filename;
             }
